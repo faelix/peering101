@@ -66,7 +66,7 @@ When setting up the peer:
 .. code-block:: none
 
   /routing bgp instance
-    set default as=64512 router-id=192.0.2.1
+    set default as=65000 router-id=192.0.2.1
   /routing bgp network
     add network=198.51.100.0/24
   /routing bgp peer
