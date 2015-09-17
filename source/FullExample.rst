@@ -58,4 +58,37 @@ BIRD
 
 Once IOS finished, re-run bgpq3 with "-b" for both prefix lists and as-sets.
 
+MikroTik RouterOS
+-----------------
+
+When setting up the peer:
+
+.. code-block:: none
+
+  /routing bgp instance
+    set default as=64512 router-id=192.0.2.1
+  /routing bgp network
+    add network=198.51.100.0/24
+  /routing bgp peer
+    add in-filter=EXAMPLE-in name=example-peering remote-address=10.1.1.1 remote-as=64512
+
+  /routing filter
+    add action=accept chain=EXAMPLE-in prefix=192.0.2.0/24
+    add action=accept chain=EXAMPLE-in bgp-as-path="^64512(_64512)*$"
+    add action=accept chain=EXAMPLE-in bgp-as-path="^64512(_[0-9]+)*_(65001|65002|65003)$"
+
+You just need a cron job to run:
+
+.. code-block:: none
+
+  /routing filter
+    remove [/routing filter find where chain=EXAMPLE-in]
+    add action=accept chain=EXAMPLE-in prefix=...
+
+You can generate a "prefix list" for that cron job like this:
+
+.. code-block:: none
+
+  bgpq3 -F "add action=accept chain=EXAMPLE-in prefix=%n/%l\n" AS64512
+
 and more...
